@@ -13,7 +13,7 @@ Hackpad/說明： https://g0v.hackpad.com/UssOWtAVda9
 1. Deploy Grafana + Influx 
   1. `cd step1/dockers`
   2. `sudo docker-compose build`
-  3. `sudo env GF_SECURITY_ADMIN_PASSWORD=<passwd> docker-compode up -d`
+  3. `sudo env GF_SECURITY_ADMIN_PASSWORD=<passwd> GF_SERVER_HTTP_PORT=5566 docker-compode up -d`
   4. `./resetInflux.sh`
 3. Setup parser 
   1. `cd parser`
