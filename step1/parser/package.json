@@ -1,0 +1,29 @@
+{
+  "name": "tscs-parser",
+  "version": "1.0.0",
+  "description": "parser to insert tscs csv into influx with tag",
+  "main": "csv2influx.js",
+  "dependencies": {
+    "n-readlines": "^0.2.2",
+    "request": "^2.69.0",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/g0v/automate.tscs.git"
+  },
+  "keywords": [
+    "js",
+    "csv"
+  ],
+  "author": "ddio",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/g0v/automate.tscs/issues"
+  },
+  "homepage": "https://github.com/g0v/automate.tscs#readme"
+}
