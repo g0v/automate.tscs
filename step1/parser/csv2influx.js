@@ -1,8 +1,9 @@
 'use strict'
 
 var URL = 'http://127.0.0.1:8086/write?db=tscs&precision=s',
+	MEASUREMENT_NAME = 'basic_88',
 	MAX_N_PER_YEAR = 7200,
-	N_DOWN_SAMPLE = 100, // sample 1 record every N_DOWN_SAMPLE
+	N_DOWN_SAMPLE = 10, // sample 1 record every N_DOWN_SAMPLE
 	YEAR_INDX = 85,
 	N_PER_REQEST = 200,
 	TAKE_A_BREAK = 2000,
@@ -43,29 +44,30 @@ var header = [
 	sampleData = [];
 
 
-function createPoint( data, headerIndex, serial ) {
+function createPoint( data, serial ) {
 
 	// create a measurement, name = header[ index ], tag = all other headers
-	// example data: "cpu_load_short,host=server01 value=$random $timestamp"
+	// example data: "<measurement>,tag1=val1,tag2=val2 field1=val1,field2=val2 $timestamp"
 	//
 	// use 01/30 every year to avoid year underflow, since influx can only be
 	// group by week instead of month or year.
-	var dataString = header[ headerIndex ],
+	var tagString = [],
+		fieldString = [],
+
 		timestamp = Date.parse( data[ YEAR_INDX ] + '-01-30' )/1000 + ( serial % MAX_N_PER_YEAR );
 
 	header.forEach( function( attr, i ) {
-		if( headerIndex != i && !ignoreList[ attr ] && data[i] !== '' ) {
-			dataString += [ ',', attr, '=', data[i] ].join('');
+		if( !ignoreList[ attr ] && data[i] !== '' ) {
+
+			// tag name cannot exist in field, influxdb issue #3783
+			tagString.push( [ 'tag-', attr, '=', data[i] ].join('') );
+			fieldString.push( [ attr, '=', data[i] ].join('') );
 		}
 	});
 
-	if( data[headerIndex] === '' ) {
-		return;
-	}
-
-	dataString += ' ' + 'value=' + data[headerIndex] + ' ' + timestamp;
-
-	return dataString;
+	return MEASUREMENT_NAME + ',' + 
+		tagString.join(',') + ' ' + 
+		fieldString.join(',') + ' ' + timestamp;
 }
 
 function insertRecord( line ) {
@@ -80,15 +82,11 @@ function insertRecord( line ) {
 		tokens[ indx ] = (tokens[ indx ]-0).toFixed(2);
 	});
 
-	header.forEach( function( attr, i ) {
+	var thisDataString = createPoint( tokens, serial );
 
-		if( !ignoreList[ attr ] ) {
-			var thisDataString = createPoint( tokens, i, serial );
-			if( thisDataString ) {
-				sampleData.push( thisDataString );
-			}
-		}
-	});
+	if( thisDataString ) {
+		sampleData.push( thisDataString );
+	}
 }
 
 function processLine() {
@@ -120,14 +118,17 @@ function sendRequest() {
 			url: URL,
 			body: thisBody
 		}, function( error, response, body ) {
-			if( response.statusCode == 204 ) {
+			if( response && response.statusCode == 204 ) {
 				nSucceeded++;
 				process.stdout.write( '\r' + (serial*100/nLineInCSV).toFixed(2) + '%, Retry: ' + nRetry );
 				sampleData = [];
 				processLine();
-			} else {
+			} else if( response ) {
 				nRetry++;
 				setTimeout( sendRequest, TAKE_A_BREAK );
+				console.log( body );
+			} else {
+				console.error( 'Sth wrong in http request.', error );
 			}
 		});
 

@@ -8,4 +8,4 @@ SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 # m h dom mon dow usercommand
-0 3    * * *    root  /opt/influxdb/influxd backup /influxdb_backup/backup
+0 3    * * *    root  /usr/bin/influxd backup /influxdb_backup/backup

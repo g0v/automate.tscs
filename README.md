@@ -12,9 +12,8 @@ Hackpad/說明： https://g0v.hackpad.com/UssOWtAVda9
 
 1. Deploy Grafana + Influx 
   1. `cd step1/dockers`
-  1. [Optional] change grafana port to 80 by editing docker-compose.yml `3000:3000` => `80:3000`
   2. `sudo docker-compose build`
-  3. `sudo env GF_SECURITY_ADMIN_PASSWORD=<passwd> docker-compode up -d`
+  3. `sudo env GF_SECURITY_ADMIN_PASSWORD=<passwd> docker-compode -f docker-compose.yml -f prod.yml up -d`
   4. `./resetInflux.sh`
 3. Setup parser 
   1. `cd parser`
