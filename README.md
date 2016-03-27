@@ -3,8 +3,10 @@
 Hackpad/說明： https://g0v.hackpad.com/UssOWtAVda9
 
 # Requirements
+0. git
 1. Docker 1.7+
 2. Docker-compose 1.6+
+3. node
 
 # Features
 
@@ -13,7 +15,7 @@ Hackpad/說明： https://g0v.hackpad.com/UssOWtAVda9
 1. Deploy Grafana + Influx 
   1. `cd step1/dockers`
   2. `sudo docker-compose build`
-  3. `sudo env GF_SECURITY_ADMIN_PASSWORD=<passwd> docker-compode -f docker-compose.yml -f prod.yml up -d`
+  3. `sudo env GF_SECURITY_ADMIN_PASSWORD=<passwd> docker-compose -f docker-compose.yml -f prod.yml up -d`
   4. `./resetInflux.sh`
 3. Setup parser 
   1. `cd parser`
