@@ -46,4 +46,4 @@ Hackpad/說明： https://g0v.hackpad.com/UssOWtAVda9
 3. Setup Kibana
   1. Open kibana in browser, port 5601
   2. Use "tscs" index as default index
-  3. (optional) import example dashboards and visualizations, see `visualization/data/kibana.example.json`
+  3. (optional) import example dashboards and visualizations, Settings -> Object, choose `visualization/data/kibana.example.json`
